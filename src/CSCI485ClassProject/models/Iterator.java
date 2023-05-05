@@ -1,4 +1,4 @@
-package CSCI485ClassProject;
+package CSCI485ClassProject.models;
 
 import CSCI485ClassProject.models.Record;
 

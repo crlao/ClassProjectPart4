@@ -10,8 +10,10 @@ import CSCI485ClassProject.models.AttributeType;
 import CSCI485ClassProject.models.ComparisonOperator;
 import CSCI485ClassProject.models.Record;
 import CSCI485ClassProject.models.TableMetadata;
+import CSCI485ClassProject.models.Iterator.Mode;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.After;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -111,7 +113,7 @@ public class Part2Test {
    */
   @Test
   public void unitTest2() {
-    Cursor cursor = records.openCursor(EmployeeTableName, Cursor.Mode.READ);
+    Cursor cursor = records.openCursor(EmployeeTableName, Mode.READ);
     assertNotNull(cursor);
 
     // initialize the first record
@@ -143,7 +145,7 @@ public class Part2Test {
     assertEquals(ssn, initialNumberOfRecords);
 
     // use getLast to verify again
-    cursor = records.openCursor(EmployeeTableName, Cursor.Mode.READ);
+    cursor = records.openCursor(EmployeeTableName, Mode.READ);
     assertNotNull(cursor);
     rec = records.getLast(cursor);
     ssn--;
@@ -215,7 +217,7 @@ public class Part2Test {
   @Test
   public void unitTest4() {
     // use cursor to select the record with given name, and verify the correctness
-    Cursor cursor = records.openCursor(EmployeeTableName, Salary, 100, ComparisonOperator.GREATER_THAN_OR_EQUAL_TO, Cursor.Mode.READ, false);
+    Cursor cursor = records.openCursor(EmployeeTableName, Salary, 100, ComparisonOperator.GREATER_THAN_OR_EQUAL_TO, Mode.READ, false);
 
     boolean isCursorInitialized = false;
     for (int i = initialNumberOfRecords; i<initialNumberOfRecords + updatedNumberOfRecords; i++) {
@@ -262,7 +264,7 @@ public class Part2Test {
       String address = getAddress(i);
       long salary = getSalary(i);
 
-      cursor = records.openCursor(EmployeeTableName, Name, name, ComparisonOperator.EQUAL_TO, Cursor.Mode.READ, false);
+      cursor = records.openCursor(EmployeeTableName, Name, name, ComparisonOperator.EQUAL_TO, Mode.READ, false);
 
       Record record = records.getFirst(cursor);
       assertNotNull(record);
@@ -287,7 +289,7 @@ public class Part2Test {
    */
   @Test
   public void unitTest6() {
-    Cursor cursor = records.openCursor(EmployeeTableName, Cursor.Mode.READ_WRITE);
+    Cursor cursor = records.openCursor(EmployeeTableName, Mode.READ_WRITE);
     assertNotNull(cursor);
 
     // delete the records with odd SSN
@@ -321,7 +323,7 @@ public class Part2Test {
       String address = getAddress(i);
       long salary = getSalary(i);
 
-      cursor = records.openCursor(EmployeeTableName, SSN, ssn, ComparisonOperator.EQUAL_TO, Cursor.Mode.READ, false);
+      cursor = records.openCursor(EmployeeTableName, SSN, ssn, ComparisonOperator.EQUAL_TO, Mode.READ, false);
       rec = records.getFirst(cursor);
       if (ssn % 2 == 0) {
         assertNotNull(rec);
@@ -368,7 +370,7 @@ public class Part2Test {
     }
 
     // verify that odd records are back
-    Cursor cursor = records.openCursor(EmployeeTableName, Cursor.Mode.READ_WRITE);
+    Cursor cursor = records.openCursor(EmployeeTableName, Mode.READ_WRITE);
     assertNotNull(cursor);
 
     // verify that all records are there, and delete the odd SSN records again
@@ -407,7 +409,7 @@ public class Part2Test {
     assertEquals(StatusCode.CURSOR_INVALID, records.deleteRecord(cursor));
 
     // update even SSN records to be odd
-    cursor = records.openCursor(EmployeeTableName, Cursor.Mode.READ_WRITE);
+    cursor = records.openCursor(EmployeeTableName, Mode.READ_WRITE);
     assertNotNull(cursor);
 
     assertEquals(StatusCode.CURSOR_NOT_INITIALIZED, records.updateRecord(cursor, new String[]{SSN}, new Object[]{15}));
@@ -434,7 +436,7 @@ public class Part2Test {
     for (int i = 0; i<updatedNumberOfRecords + initialNumberOfRecords; i++) {
       ssn = i;
 
-      cursor = records.openCursor(EmployeeTableName, SSN, ssn, ComparisonOperator.EQUAL_TO, Cursor.Mode.READ, false);
+      cursor = records.openCursor(EmployeeTableName, SSN, ssn, ComparisonOperator.EQUAL_TO, Mode.READ, false);
       rec = records.getFirst(cursor);
       if (ssn % 2 == 1) {
 
@@ -457,5 +459,11 @@ public class Part2Test {
       assertEquals(StatusCode.SUCCESS, records.commitCursor(cursor));
     }
     System.out.println("Test7 passed!");
+  }
+
+  @After 
+  public void finish() {
+    tableManager.closeDatabase();
+    records.closeDatabase();
   }
 }

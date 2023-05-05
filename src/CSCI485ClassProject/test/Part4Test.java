@@ -2,7 +2,6 @@ package CSCI485ClassProject.test;
 
 import CSCI485ClassProject.Indexes;
 import CSCI485ClassProject.IndexesImpl;
-import CSCI485ClassProject.Iterator;
 import CSCI485ClassProject.Records;
 import CSCI485ClassProject.RecordsImpl;
 import CSCI485ClassProject.RelationalAlgebraOperators;
@@ -15,6 +14,7 @@ import CSCI485ClassProject.models.AssignmentExpression;
 import CSCI485ClassProject.models.AttributeType;
 import CSCI485ClassProject.models.ComparisonOperator;
 import CSCI485ClassProject.models.ComparisonPredicate;
+import CSCI485ClassProject.models.Iterator;
 import CSCI485ClassProject.models.Record;
 import CSCI485ClassProject.models.TableMetadata;
 import org.junit.Before;

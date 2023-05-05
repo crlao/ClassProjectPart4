@@ -1,8 +1,8 @@
 package CSCI485ClassProject.models;
 
 import CSCI485ClassProject.StatusCode;
-
-import static CSCI485ClassProject.StatusCode.PREDICATE_OR_EXPRESSION_INVALID;
+import CSCI485ClassProject.utils.AlgebraicUtils;
+import CSCI485ClassProject.utils.ComparisonUtils;
 
 public class ComparisonPredicate {
 
@@ -64,6 +64,7 @@ public class ComparisonPredicate {
 
   public ComparisonPredicate() {
     // None predicate by default
+    predicateType = Type.NONE;
   }
   // e.g. Salary == 10000, Salary <= 5000
   public ComparisonPredicate(String leftHandSideAttrName, AttributeType leftHandSideAttrType, ComparisonOperator operator, Object rightHandSideValue) {
@@ -86,6 +87,35 @@ public class ComparisonPredicate {
     this.rightHandSideOperator = rightHandSideOperator;
   }
 
+  public boolean isSatisfiedBy(Record record) {
+    if (predicateType == Type.NONE) {
+      return true;
+    }
+
+    Object lhsValue = record.getValueForGivenAttrName(leftHandSideAttrName);
+    Object rhsValue;
+    
+    if (predicateType == Type.ONE_ATTR) {
+      rhsValue = rightHandSideValue;
+    } else {
+      if (rightHandSideAttrType == AttributeType.INT) {
+        rhsValue = AlgebraicUtils.computeINT(record.getValueForGivenAttrName(rightHandSideAttrName), rightHandSideValue, rightHandSideOperator);
+      } else if (rightHandSideAttrType == AttributeType.DOUBLE) {
+        rhsValue = AlgebraicUtils.computeDOUBLE(record.getValueForGivenAttrName(rightHandSideAttrName), rightHandSideValue, rightHandSideOperator);
+      } else {
+        rhsValue = AlgebraicUtils.computeVARCHAR(record.getValueForGivenAttrName(rightHandSideAttrName), rightHandSideValue, rightHandSideOperator);
+      }
+    }
+
+    if (leftHandSideAttrType == AttributeType.INT) {
+      return ComparisonUtils.compareTwoINT(lhsValue, rhsValue, operator);
+    } else if  (leftHandSideAttrType == AttributeType.DOUBLE) {
+      return ComparisonUtils.compareTwoDOUBLE(lhsValue, rhsValue, operator);
+    } else {
+      return ComparisonUtils.compareTwoVARCHAR(lhsValue, rhsValue, operator);
+    }
+  }
+
   // validate the predicate, return PREDICATE_VALID if the predicate is valid
   public StatusCode validate() {
     if (predicateType == Type.NONE) {
@@ -105,7 +135,7 @@ public class ComparisonPredicate {
           || (leftHandSideAttrType != rightHandSideAttrType)
           || (leftHandSideAttrType == AttributeType.INT && !(rightHandSideValue instanceof Integer) && !(rightHandSideValue instanceof Long)
           || (leftHandSideAttrType == AttributeType.DOUBLE && !(rightHandSideValue instanceof Double) && !(rightHandSideValue instanceof Float)))) {
-        return PREDICATE_OR_EXPRESSION_INVALID;
+        return StatusCode.PREDICATE_OR_EXPRESSION_INVALID;
       }
     }
     return StatusCode.PREDICATE_OR_EXPRESSION_VALID;

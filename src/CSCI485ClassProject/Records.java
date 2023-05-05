@@ -2,6 +2,7 @@ package CSCI485ClassProject;
 
 import CSCI485ClassProject.models.ComparisonOperator;
 import CSCI485ClassProject.models.Record;
+import CSCI485ClassProject.models.Iterator.Mode;
 
 /**
  * DataRecordManager manages the data stored by the certain table. It provides interfaces to
@@ -34,7 +35,7 @@ public interface Records {
    * @param mode the mode of cursor: READ/READ_WRITE
    * @return the cursor
    */
-  Cursor openCursor(String tableName, Cursor.Mode mode);
+  Cursor openCursor(String tableName, Mode mode);
 
   /**
    * Open a cursor that iterates a table with a certain predicate.
@@ -50,7 +51,7 @@ public interface Records {
    *    for READ cursor, true indicates the search should use the index on the given attribute.
    * @return Cursor
    */
-  Cursor openCursor(String tableName, String attrName, Object attrValue, ComparisonOperator operator, Cursor.Mode mode, boolean isUsingIndex);
+  Cursor openCursor(String tableName, String attrName, Object attrValue, ComparisonOperator operator, Mode mode, boolean isUsingIndex);
 
   /**
    * Seek the cursor to the first qualified record.
@@ -135,4 +136,6 @@ public interface Records {
    * @return StatusCode
    */
   StatusCode deleteDataRecord(String tableName, String[] attrNames, Object[] attrValues);
+
+  public void closeDatabase();
 }

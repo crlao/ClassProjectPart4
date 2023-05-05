@@ -15,7 +15,7 @@ public interface Indexes {
   StatusCode createIndex(String tableName, String attrName, IndexType indexType);
 
   /**
-   * Remove the index structure from an attribute in a table.
+   * Drop the index structure from an attribute in a table.
    *
    * The table, attribute and index structure should exist.
    * @param tableName the target table name
@@ -23,4 +23,6 @@ public interface Indexes {
    * @return StatusCode
    */
   StatusCode dropIndex(String tableName, String attrName);
+
+  public void closeDatabase();
 }

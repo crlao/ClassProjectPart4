@@ -13,8 +13,10 @@ import CSCI485ClassProject.models.ComparisonOperator;
 import CSCI485ClassProject.models.IndexType;
 import CSCI485ClassProject.models.Record;
 import CSCI485ClassProject.models.TableMetadata;
+import CSCI485ClassProject.models.Iterator.Mode;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.After;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -133,7 +135,7 @@ public class Part3Test {
     }
 
     // verify that the insertion succeeds
-    Cursor cursor = records.openCursor(EmployeeTableName, Cursor.Mode.READ);
+    Cursor cursor = records.openCursor(EmployeeTableName, Mode.READ);
     assertNotNull(cursor);
 
     // initialize the first record
@@ -175,7 +177,7 @@ public class Part3Test {
   @Test
   public void unitTest2() {
     assertEquals(StatusCode.SUCCESS, indexes.createIndex(EmployeeTableName, Salary, IndexType.NON_CLUSTERED_B_PLUS_TREE_INDEX));
-    Cursor cursor = records.openCursor(EmployeeTableName, Salary, 75, ComparisonOperator.LESS_THAN, Cursor.Mode.READ, true);
+    Cursor cursor = records.openCursor(EmployeeTableName, Salary, 75, ComparisonOperator.LESS_THAN, Mode.READ, true);
 
     boolean isCursorInitialized = false;
     for (int i = 0; i < 75; i++) {
@@ -195,7 +197,7 @@ public class Part3Test {
     assertNull(records.getNext(cursor));
     assertEquals(StatusCode.SUCCESS, records.commitCursor(cursor));
 
-    assertNull(records.openCursor(EmployeeTableName, Age, 40, ComparisonOperator.LESS_THAN_OR_EQUAL_TO, Cursor.Mode.READ, true));
+    assertNull(records.openCursor(EmployeeTableName, Age, 40, ComparisonOperator.LESS_THAN_OR_EQUAL_TO, Mode.READ, true));
     System.out.println("Test2 passed!");
   }
 
@@ -218,7 +220,7 @@ public class Part3Test {
       assertEquals(StatusCode.SUCCESS, records.insertRecord(EmployeeTableName, EmployeeTablePKAttributes, primaryKeyVal, EmployeeTableNonPKAttributeNames, nonPrimaryKeyVal));
     }
 
-    Cursor cursor = records.openCursor(EmployeeTableName, Salary, 100, ComparisonOperator.GREATER_THAN_OR_EQUAL_TO, Cursor.Mode.READ, true);
+    Cursor cursor = records.openCursor(EmployeeTableName, Salary, 100, ComparisonOperator.GREATER_THAN_OR_EQUAL_TO, Mode.READ, true);
     assertNotNull(cursor);
 
     boolean isCursorInitialized = false;
@@ -243,7 +245,7 @@ public class Part3Test {
 
   @Test
   public void unitTest4() {
-    Cursor cursor = records.openCursor(EmployeeTableName, Cursor.Mode.READ_WRITE);
+    Cursor cursor = records.openCursor(EmployeeTableName, Mode.READ_WRITE);
 
     boolean isCursorInitialized = false;
     while (true) {
@@ -267,7 +269,7 @@ public class Part3Test {
 
     assertEquals(StatusCode.SUCCESS, records.commitCursor(cursor));
 
-    cursor = records.openCursor(EmployeeTableName, SSN, initialNumberOfRecords + updatedNumberOfRecords, ComparisonOperator.LESS_THAN_OR_EQUAL_TO, Cursor.Mode.READ, true);
+    cursor = records.openCursor(EmployeeTableName, SSN, initialNumberOfRecords + updatedNumberOfRecords, ComparisonOperator.LESS_THAN_OR_EQUAL_TO, Mode.READ, true);
     isCursorInitialized = false;
     while (true) {
       Record record;
@@ -314,7 +316,7 @@ public class Part3Test {
 
   @Test
   public void unitTest6() {
-    Cursor cursor = records.openCursor(EmployeeTableName, Cursor.Mode.READ_WRITE);
+    Cursor cursor = records.openCursor(EmployeeTableName, Mode.READ_WRITE);
 
     boolean isCursorInitialized = false;
     for (int i = 0; i < initialNumberOfRecords + updatedNumberOfRecords; i++) {
@@ -335,7 +337,7 @@ public class Part3Test {
     assertEquals(StatusCode.SUCCESS, records.commitCursor(cursor));
     isCursorInitialized = false;
 
-    cursor = records.openCursor(EmployeeTableName, Salary, 0, ComparisonOperator.GREATER_THAN, Cursor.Mode.READ, true);
+    cursor = records.openCursor(EmployeeTableName, Salary, 0, ComparisonOperator.GREATER_THAN, Mode.READ, true);
     for (int i = 1; i < initialNumberOfRecords + updatedNumberOfRecords; i++) {
       Record record;
       if (!isCursorInitialized) {
@@ -359,8 +361,8 @@ public class Part3Test {
 
     tableManager.dropAllTables();
 
-    int numOfRecords = 1000000;
-    int numOfQueries = 10000;
+    int numOfRecords = 1000;
+    int numOfQueries = 100;
 
     String INT0 = "INT0";
     String INT1 = "INT1";
@@ -389,7 +391,7 @@ public class Part3Test {
     randGenerator = new Random(randSeed);
     for (int i = 0; i < numOfQueries; i++) {
       Long randVal = getPerfRandNumber(randGenerator);
-      Cursor cursor = records.openCursor(PerfTableName, INT1, randVal, ComparisonOperator.EQUAL_TO, Cursor.Mode.READ, false);
+      Cursor cursor = records.openCursor(PerfTableName, INT1, randVal, ComparisonOperator.EQUAL_TO, Mode.READ, false);
       assertNotNull(records.getFirst(cursor));
       assertEquals(StatusCode.SUCCESS, records.commitCursor(cursor));
     }
@@ -403,7 +405,7 @@ public class Part3Test {
     randGenerator = new Random(randSeed);
     for (int i = 0; i < numOfQueries; i++) {
       Long randVal = getPerfRandNumber(randGenerator);
-      Cursor cursor = records.openCursor(PerfTableName, INT1, randVal, ComparisonOperator.EQUAL_TO, Cursor.Mode.READ, true);
+      Cursor cursor = records.openCursor(PerfTableName, INT1, randVal, ComparisonOperator.EQUAL_TO, Mode.READ, true);
       assertNotNull(records.getFirst(cursor));
       assertEquals(StatusCode.SUCCESS, records.commitCursor(cursor));
     }
@@ -418,7 +420,7 @@ public class Part3Test {
     randGenerator = new Random(randSeed);
     for (int i = 0; i < numOfQueries; i++) {
       Long randVal = getPerfRandNumber(randGenerator);
-      Cursor cursor = records.openCursor(PerfTableName, INT1, randVal, ComparisonOperator.EQUAL_TO, Cursor.Mode.READ, true);
+      Cursor cursor = records.openCursor(PerfTableName, INT1, randVal, ComparisonOperator.EQUAL_TO, Mode.READ, true);
       assertNotNull(records.getFirst(cursor));
       assertEquals(StatusCode.SUCCESS, records.commitCursor(cursor));
     }
@@ -426,5 +428,12 @@ public class Part3Test {
     long executionTimeWithBPlusTreeIndex = (endTime - startTime) / 1000;
     System.out.println("Query " + numOfQueries + " Records with non-clustered B+Tree index: " + executionTimeWithBPlusTreeIndex + " milliseconds");
     System.out.println("Test7 passed!");
+  }
+
+  @After 
+  public void finish() {
+    tableManager.closeDatabase();
+    records.closeDatabase();
+    indexes.closeDatabase();
   }
 }

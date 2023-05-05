@@ -2,6 +2,7 @@ package CSCI485ClassProject;
 
 import CSCI485ClassProject.models.AssignmentExpression;
 import CSCI485ClassProject.models.ComparisonPredicate;
+import CSCI485ClassProject.models.Iterator;
 import CSCI485ClassProject.models.Record;
 
 import java.util.List;
